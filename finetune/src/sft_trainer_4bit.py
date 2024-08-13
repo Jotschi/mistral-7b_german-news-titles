@@ -1,23 +1,21 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig,HfArgumentParser,TrainingArguments,pipeline, logging, TextStreamer
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig,HfArgumentParser, TrainingArguments, pipeline, logging, TextStreamer
 from peft import LoraConfig, PeftModel, prepare_model_for_kbit_training, get_peft_model
 import os, torch, wandb, platform, warnings
 from datasets import load_dataset, DatasetDict
 from trl import SFTTrainer
+import re
 
-
+max_seq_length=128
 base_model = "mistralai/Mistral-7B-Instruct-v0.3"
 dataset_name = "Jotschi/german-news-titles"
 new_model = "Jotschi/Mistral-7B-v0.3-german-news-titles"
 
-dataset = load_dataset(dataset_name)
-
 wandb.init(project="mistral7b-instruct-news-title")
 
-max_seq_length=256
 
 training_arguments = TrainingArguments(
     output_dir= "./results",
-    num_train_epochs= 1,
+    num_train_epochs= 8,
     per_device_train_batch_size= 4,
     gradient_accumulation_steps= 2,
     optim = "paged_adamw_8bit",
@@ -41,7 +39,7 @@ training_arguments = TrainingArguments(
 
 tokenizer = AutoTokenizer.from_pretrained(base_model, trust_remote_code=True)
 tokenizer.pad_token = tokenizer.eos_token
-tokenizer.padding_side = "left"
+#tokenizer.padding_side = "left"
 
 ################
 # Dataset
@@ -51,14 +49,23 @@ def prepare_dialogue(text, title):
   
   #text  = "Einstein gilt als einer der bedeutendsten Physiker der Wissenschaftsgeschichte und weltweit als einer der bekanntesten Wissenschaftler der Neuzeit."
   #title = "Albert Einstein war ein Genie!"
-
+  count=count_words(title)
+  prompt="Erstelle einen " + str(count) + " Wörter langen Titelvorschlag für folgenden Artikel:\n" + text
+  print(str(count))
   chat = [
-       {"role": "user", "content": "Erstelle einen Titelvorschlag für folgenden Artikel:\n" + text},
+       {"role": "user", "content": prompt},
        {"role": "assistant", "content": "Titelvorschlag: " + title},
     ]
   
-  return tokenizer.apply_chat_template(chat, tokenize=False)
+  return tokenizer.apply_chat_template(chat, tokenize=False) + tokenizer.eos_token
 
+def count_words(text):
+    # Remove punctuation using a regular expression
+    clean_text = re.sub(r'[^\w\s]', '', text)
+    # Split the text into words
+    words = clean_text.split()
+    # Return the number of words
+    return len(words)
 
 def chunk_examples(batch):
     all_samples = []
@@ -72,6 +79,7 @@ def chunk_examples(batch):
             all_samples += [ prepare_dialogue(text, title) ]
     return {"text": all_samples}
 
+dataset = load_dataset(dataset_name)
 print(dataset['train'])
 
 train_dataset = dataset['train'].map(chunk_examples, batched=True, num_proc=4, remove_columns=["titles", "text"])
@@ -109,11 +117,12 @@ if training_arguments.gradient_checkpointing:
 
 peft_config = LoraConfig(
         r=64,
-        lora_alpha=16,
+        lora_alpha=32,
         lora_dropout=0.05,
         bias="none",
         task_type="CAUSAL_LM",
-        target_modules = ["q_proj", "k_proj", "v_proj", "o_proj","gate_proj", "up_proj", "down_proj"])
+        #target_modules="all-linear")
+        target_modules = ["q_proj", "k_proj", "v_proj", "o_proj","gate_proj", "up_proj", "down_proj", "lm_head"])
 model = get_peft_model(model, peft_config)
 
 ################
