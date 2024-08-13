@@ -4,9 +4,18 @@ This repository contains the finetune and dataset generation scripts for the ger
 
 ## Dataset
 
+* [german-news-titles](https://huggingface.co/datasets/Jotschi/german-news-titles)
+
+## Dataset generation
+
+
 The `dataset` scripts generate the entries using Ollama and `dolphin-mixtral:v2.7`.
 
-## Train
+## Models
+
+* [Mistral-7B-v0.1_german-news-titles-v1](https://huggingface.co/Jotschi/Mistral-7B-v0.1_german-news-titles-v1)
+
+## Model training
 
 ```bash
 ./train.sh
