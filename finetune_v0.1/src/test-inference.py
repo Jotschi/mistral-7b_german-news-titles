@@ -13,7 +13,7 @@ quantization_config = BitsAndBytesConfig(
 model = AutoModelForCausalLM.from_pretrained(model_path, quantization_config=quantization_config)
 tokenizer = AutoTokenizer.from_pretrained(model_path)
 
-text = "Erstelle einen Titelvorschlag für den Text.\n"
+text = "Erstelle einen 14 Wörter langen Titelvorschlag für folgenden Artikel:\n"
 text += "Albert Einstein (* 14. März 1879 in Ulm; † 18. April 1955 in Princeton, New Jersey) war ein schweizerisch-US-amerikanischer theoretischer Physiker deutscher Herkunft. Der Wissenschaftler jüdischer Abstammung hatte bis 1896 die württembergische Staatsbürgerschaft, ab 1901 die Schweizer Staatsbürgerschaft und ab 1940 zusätzlich die US-amerikanische. Preußischer Staatsangehöriger war er von 1914 bis 1934."
 
 messages = [

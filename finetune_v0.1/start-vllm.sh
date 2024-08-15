@@ -22,7 +22,7 @@ podman run -d --shm-size 16G \
       --device nvidia.com/gpu=all \
       --name $NAME \
       -p 0.0.0.0:$PORT:8000/tcp \
-      -v $(pwd)/.cache:/root/.cache/huggingface \
+      -v ~/.cache/huggingface:/root/.cache/huggingface \
       -v $(pwd)/models:/models \
       $IMAGE:$VERSION \
       --model $LLM \
