@@ -6,7 +6,7 @@ from trl import SFTTrainer
 import re
 
 max_seq_length=128
-base_model = "mistralai/Mistral-7B-Instruct-v0.3"
+base_model = "mistralai/Mistral-7B-Instruct-v0.1"
 dataset_name = "Jotschi/german-news-titles"
 new_model = "Jotschi/Mistral-7B-v0.3-german-news-titles"
 
@@ -15,12 +15,12 @@ wandb.init(project="mistral7b-instruct-news-title")
 
 training_arguments = TrainingArguments(
     output_dir= "./results",
-    num_train_epochs= 8,
+    num_train_epochs= 18,
     per_device_train_batch_size= 4,
     gradient_accumulation_steps= 2,
     optim = "paged_adamw_8bit",
-    save_steps=100,
-    logging_steps= 50,
+    save_steps=200,
+    logging_steps= 100,
     learning_rate= 2e-4,
     weight_decay= 0.001,
     fp16= False,
@@ -51,7 +51,7 @@ def prepare_dialogue(text, title):
   #title = "Albert Einstein war ein Genie!"
   count=count_words(title)
   prompt="Erstelle einen " + str(count) + " Wörter langen Titelvorschlag für folgenden Artikel:\n" + text
-  print(str(count))
+  #print(str(count))
   chat = [
        {"role": "user", "content": prompt},
        {"role": "assistant", "content": "Titelvorschlag: " + title},

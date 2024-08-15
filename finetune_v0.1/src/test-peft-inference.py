@@ -36,6 +36,7 @@ base_model = AutoModelForCausalLM.from_pretrained(
     quantization_config=bnb_config,
     return_dict=True,
     torch_dtype=torch.float16,
+    attn_implementation='sdpa',
     device_map="cuda")
 
 
@@ -51,7 +52,8 @@ ft_model = PeftModel.from_pretrained(base_model, model_path)
 
 generation_config = GenerationConfig(
     do_sample=True,
-    top_k=1,
+    top_k=20,
+    top_p=0.8,
     temperature=0.1,
     max_new_tokens=256,
     pad_token_id=tokenizer.pad_token_id
