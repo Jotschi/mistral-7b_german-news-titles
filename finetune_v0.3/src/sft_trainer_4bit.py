@@ -6,7 +6,7 @@ from trl import SFTTrainer
 import re
 
 max_seq_length=128
-base_model = "mistralai/Mistral-7B-Instruct-v0.1"
+base_model = "mistralai/Mistral-7B-Instruct-v0.3"
 dataset_name = "Jotschi/german-news-titles"
 new_model = "Jotschi/Mistral-7B-v0.3-german-news-titles"
 

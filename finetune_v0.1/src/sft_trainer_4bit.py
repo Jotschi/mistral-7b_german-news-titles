@@ -5,8 +5,8 @@ from datasets import load_dataset, DatasetDict
 from trl import SFTTrainer
 import re
 
-max_seq_length=128
-base_model = "mistralai/Mistral-7B-Instruct-v0.3"
+max_seq_length=256
+base_model = "mistralai/Mistral-7B-Instruct-v0.1"
 dataset_name = "Jotschi/german-news-titles"
 new_model = "Jotschi/Mistral-7B-v0.3-german-news-titles"
 
@@ -57,7 +57,7 @@ def prepare_dialogue(text, title):
        {"role": "assistant", "content": "Titelvorschlag: " + title},
     ]
   
-  return tokenizer.apply_chat_template(chat, tokenize=False) + tokenizer.eos_token
+  return tokenizer.apply_chat_template(chat, tokenize=False)
 
 def count_words(text):
     # Remove punctuation using a regular expression
@@ -117,12 +117,12 @@ if training_arguments.gradient_checkpointing:
 
 peft_config = LoraConfig(
         r=64,
-        lora_alpha=32,
+        lora_alpha=16,
         lora_dropout=0.05,
         bias="none",
         task_type="CAUSAL_LM",
         #target_modules="all-linear")
-        target_modules = ["q_proj", "k_proj", "v_proj", "o_proj","gate_proj", "up_proj", "down_proj", "lm_head"])
+        target_modules=["q_proj", "k_proj", "v_proj", "o_proj","gate_proj"]
 model = get_peft_model(model, peft_config)
 
 ################

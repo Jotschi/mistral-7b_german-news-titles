@@ -9,7 +9,7 @@ device = "cuda" # the device to load the model onto
 
 model_path = sys.argv[1]
 model_path = "./" + model_path
-base_model_id = "mistralai/Mistral-7B-Instruct-v0.3"
+base_model_id = "mistralai/Mistral-7B-Instruct-v0.1"
 
 ################
 # Tokenizer

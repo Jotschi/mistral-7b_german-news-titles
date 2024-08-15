@@ -8,7 +8,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 . $SCRIPT_DIR/venv/bin/activate
 
-BASE_MODEL="mistralai/Mistral-7B-Instruct-v0.1"
+BASE_MODEL="mistralai/Mistral-7B-Instruct-v0.3"
 PEFT_PATH="$1"
 NAME="$2"
 
