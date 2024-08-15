@@ -122,7 +122,7 @@ peft_config = LoraConfig(
         bias="none",
         task_type="CAUSAL_LM",
         #target_modules="all-linear")
-        target_modules=["q_proj", "k_proj", "v_proj", "o_proj","gate_proj"]
+        target_modules=["q_proj", "k_proj", "v_proj", "o_proj","gate_proj"])
 model = get_peft_model(model, peft_config)
 
 ################
