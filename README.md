@@ -45,7 +45,7 @@ Once a good checkpoint has been generated the `merge-peft.sh` script can be used
 ./merge-peft.sh  results/checkpoint-100/ dummy
 ```
 
-# Test via VLLM
+# Test via vLLM
 
 Afterwards  the vLLM inference server container can be used to load the final model and test whether the merge was successful.
 
@@ -54,6 +54,6 @@ Afterwards  the vLLM inference server container can be used to load the final mo
 ./start-vllm.sh models/dummy/
 
 # Run inference
-./vllm-test.sh dummy
+./test-vllm.sh dummy
 ```
 
